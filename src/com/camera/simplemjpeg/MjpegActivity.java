@@ -3,25 +3,49 @@ package com.camera.simplemjpeg;
 import java.io.IOException;
 import java.net.URI;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+
+import com.camera.simplemjpeg.R;
+
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MjpegActivity extends Activity {
 	private static final boolean DEBUG=false;
     private static final String TAG = "MJPEG";
+    
+    Message msg = new Message();
+    
+    Handler handler = new Handler(new Handler.Callback() {
 
+        @Override
+        public boolean handleMessage(Message msg) {
+            if(msg.arg1==1)
+            {
+            	String message = (String) msg.obj;
+            	Toast.makeText(getApplicationContext(), message ,Toast.LENGTH_LONG).show();
+            }
+            return false;
+        }
+    });
     private MjpegView mv = null;
     String URL;
     
@@ -31,11 +55,10 @@ public class MjpegActivity extends Activity {
     private int width = 640;
     private int height = 480;
     
-    private int ip_ad1 = 192;
-    private int ip_ad2 = 168;
-    private int ip_ad3 = 2;
-    private int ip_ad4 = 1;
     private int ip_port = 80;
+    private String hostname = "192.168.1.1";
+    private String username = "";
+    private String password = "";
     private String ip_command = "?action=stream";
     
     private boolean suspending = false;
@@ -46,31 +69,26 @@ public class MjpegActivity extends Activity {
         SharedPreferences preferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
         width = preferences.getInt("width", width);
         height = preferences.getInt("height", height);
-        ip_ad1 = preferences.getInt("ip_ad1", ip_ad1);
-        ip_ad2 = preferences.getInt("ip_ad2", ip_ad2);
-        ip_ad3 = preferences.getInt("ip_ad3", ip_ad3);
-        ip_ad4 = preferences.getInt("ip_ad4", ip_ad4);
+        hostname = preferences.getString("hostname", hostname);
+        username = preferences.getString("username", username);
+        password = preferences.getString("password", password);
         ip_port = preferences.getInt("ip_port", ip_port);
         ip_command = preferences.getString("ip_command", ip_command);
-                
-        StringBuilder sb = new StringBuilder();
+        
         String s_http = "http://";
-        String s_dot = ".";
         String s_colon = ":";
         String s_slash = "/";
+                
+        StringBuilder sb = new StringBuilder();
         sb.append(s_http);
-        sb.append(ip_ad1);
-        sb.append(s_dot);
-        sb.append(ip_ad2);
-        sb.append(s_dot);
-        sb.append(ip_ad3);
-        sb.append(s_dot);
-        sb.append(ip_ad4);
+        sb.append(hostname);
         sb.append(s_colon);
         sb.append(ip_port);
         sb.append(s_slash);
         sb.append(ip_command);
+        
         URL = new String(sb);
+        Log.d(TAG,URL);
 
         setContentView(R.layout.main);
         mv = (MjpegView) findViewById(R.id.mv);  
@@ -136,12 +154,12 @@ public class MjpegActivity extends Activity {
     			Intent settings_intent = new Intent(MjpegActivity.this, SettingsActivity.class);
     			settings_intent.putExtra("width", width);
     			settings_intent.putExtra("height", height);
-    			settings_intent.putExtra("ip_ad1", ip_ad1);
-    			settings_intent.putExtra("ip_ad2", ip_ad2);
-    			settings_intent.putExtra("ip_ad3", ip_ad3);
-    			settings_intent.putExtra("ip_ad4", ip_ad4);
     			settings_intent.putExtra("ip_port", ip_port);
     			settings_intent.putExtra("ip_command", ip_command);
+    			settings_intent.putExtra("hostname", hostname);
+    			settings_intent.putExtra("username", username);
+    			settings_intent.putExtra("password", password);
+
     			startActivityForResult(settings_intent, REQUEST_SETTINGS);
     			return true;
     	}
@@ -154,12 +172,12 @@ public class MjpegActivity extends Activity {
     			if (resultCode == Activity.RESULT_OK) {
     				width = data.getIntExtra("width", width);
     				height = data.getIntExtra("height", height);
-    				ip_ad1 = data.getIntExtra("ip_ad1", ip_ad1);
-    				ip_ad2 = data.getIntExtra("ip_ad2", ip_ad2);
-    				ip_ad3 = data.getIntExtra("ip_ad3", ip_ad3);
-    				ip_ad4 = data.getIntExtra("ip_ad4", ip_ad4);
     				ip_port = data.getIntExtra("ip_port", ip_port);
     				ip_command = data.getStringExtra("ip_command");
+    				hostname = data.getStringExtra("hostname");
+    				username = data.getStringExtra("username");
+    				password = data.getStringExtra("password");
+
 
     				if(mv!=null){
     					mv.setResolution(width, height);
@@ -168,12 +186,11 @@ public class MjpegActivity extends Activity {
     				SharedPreferences.Editor editor = preferences.edit();
     				editor.putInt("width", width);
     				editor.putInt("height", height);
-    				editor.putInt("ip_ad1", ip_ad1);
-    				editor.putInt("ip_ad2", ip_ad2);
-    				editor.putInt("ip_ad3", ip_ad3);
-    				editor.putInt("ip_ad4", ip_ad4);
     				editor.putInt("ip_port", ip_port);
     				editor.putString("ip_command", ip_command);
+    				editor.putString("hostname", hostname);
+    				editor.putString("username", username);
+    				editor.putString("password", password);
 
     				editor.commit();
 
@@ -186,27 +203,47 @@ public class MjpegActivity extends Activity {
     
     public class DoRead extends AsyncTask<String, Void, MjpegInputStream> {
         protected MjpegInputStream doInBackground(String... url) {
+        	
             //TODO: if camera has authentication deal with it and don't just not work
-            HttpResponse res = null;
-            DefaultHttpClient httpclient = new DefaultHttpClient(); 
+        	HttpResponse res = null;
+            DefaultHttpClient httpclient = new DefaultHttpClient();
+            
+            if (username.length() > 0 && password.length() > 0){
+
+        	 CredentialsProvider credProvider = new BasicCredentialsProvider();
+        	 credProvider.setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
+        	 new UsernamePasswordCredentials(username, password));
+        	 httpclient.setCredentialsProvider(credProvider);
+            }
+            
+            
             HttpParams httpParams = httpclient.getParams();
             HttpConnectionParams.setConnectionTimeout(httpParams, 5*1000);
+            
             Log.d(TAG, "1. Sending http request");
             try {
                 res = httpclient.execute(new HttpGet(URI.create(url[0])));
                 Log.d(TAG, "2. Request finished, status = " + res.getStatusLine().getStatusCode());
                 if(res.getStatusLine().getStatusCode()==401){
-                    //You must turn off camera User Access Control before this will work
+     	           	msg.arg1=1;
+                	msg.obj = getApplicationContext().getString(R.string.auth_failed);
+                    handler.sendMessage(msg);        
                     return null;
                 }
                 return new MjpegInputStream(res.getEntity().getContent());  
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Request failed-ClientProtocolException", e);
+                msg.arg1=1;
+            	msg.obj = "Request failed-ClientProtocolException: \n"+e;
+                handler.sendMessage(msg);       
                 //Error connecting to camera
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Request failed-IOException", e);
+                msg.arg1=1;
+            	msg.obj = "Request failed-IOException: \n"+e;
+                handler.sendMessage(msg);       
                 //Error connecting to camera
             }
             return null;
@@ -231,3 +268,4 @@ public class MjpegActivity extends Activity {
         }
     }
 }
+
