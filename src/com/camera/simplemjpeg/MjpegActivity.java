@@ -26,10 +26,11 @@ import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 public class MjpegActivity extends Activity {
-	private static final boolean DEBUG=false;
+	private static final boolean DEBUG=true;
     private static final String TAG = "MJPEG";
     
     Message msg = new Message();
@@ -62,7 +63,8 @@ public class MjpegActivity extends Activity {
     private String ip_command = "?action=stream";
     
     private boolean suspending = false;
- 
+     boolean stayAwake = false;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -74,7 +76,8 @@ public class MjpegActivity extends Activity {
         password = preferences.getString("password", password);
         ip_port = preferences.getString("ip_port", ip_port);
         ip_command = preferences.getString("ip_command", ip_command);
-        
+        stayAwake = preferences.getBoolean("stayAwake", false);
+
         String s_http = "http://";
         String s_colon = ":";
         String s_slash = "/";
@@ -108,6 +111,9 @@ public class MjpegActivity extends Activity {
         		suspending = false;
         	}
         }
+        if (stayAwake){
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } 
 
     }
 
@@ -159,6 +165,7 @@ public class MjpegActivity extends Activity {
     			settings_intent.putExtra("hostname", hostname);
     			settings_intent.putExtra("username", username);
     			settings_intent.putExtra("password", password);
+    			settings_intent.putExtra("stayAwake", stayAwake);
 
     			startActivityForResult(settings_intent, REQUEST_SETTINGS);
     			return true;
@@ -177,6 +184,7 @@ public class MjpegActivity extends Activity {
     				hostname = data.getStringExtra("hostname");
     				username = data.getStringExtra("username");
     				password = data.getStringExtra("password");
+    				stayAwake = data.getBooleanExtra("stayAwake",stayAwake);
 
 
     				if(mv!=null){
@@ -191,6 +199,7 @@ public class MjpegActivity extends Activity {
     				editor.putString("hostname", hostname);
     				editor.putString("username", username);
     				editor.putString("password", password);
+    				editor.putBoolean("stayAwake", stayAwake);
 
     				editor.commit();
 

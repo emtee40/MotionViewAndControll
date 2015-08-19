@@ -35,6 +35,8 @@
     <string name="command_videofeed">videofeed</string>
     <string name="command_streaming_with_explanation">\?action=stream (for Ai-ball)</string>
     <string name="command_videofeed_with_explanation">videofeed (for IP Webcam)</string>
+        <string name="StayAwake">Stay Awake</string>
+    
     <string name="settings_done">Done</string>
 
 </resources>

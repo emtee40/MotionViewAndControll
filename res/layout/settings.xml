@@ -197,6 +197,12 @@
                 android:text="@string/command_videofeed_with_explanation" />
         </RadioGroup>
 
+        <CheckBox
+            android:id="@+id/cStayAwake"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/StayAwake" />
+
         <Button
             android:id="@+id/settings_done"
             android:layout_width="fill_parent"

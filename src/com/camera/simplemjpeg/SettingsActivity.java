@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView.BufferType;
@@ -17,20 +20,8 @@ import android.widget.Spinner;
 
 public class SettingsActivity extends Activity {
 	
-	private static final String PREFS_NAME = "com.camera.simplemjpeg.SettingsActivity";	
 	
-	public static final String MOTION_WIDGET_PASSWORD = "MotionWidget_password";
-	public static final String MOTION_WIDGET_USERNAME = "MotionWidget_username";
-	public static final String MOTION_WIDGET_HOSTNAME = "MotionWidget_hostname";
-	public static final String MOTION_WIDGET_PORT = "MotionWidget_port";
-	public static final String MOTION_WIDGET_WIDTH = "MotionWidget_width";
-	public static final String MOTION_WIDGET_HEIGHT = "MotionWidget_height";
-	public static final String MOTION_WIDGET_CAMERA = "MotionWidget_camera";
 	
-	private int myAppWidgetId;
-	private Context self = this;
-
-
 	Button settings_done;
 	
 	Spinner resolution_spinner;
@@ -43,6 +34,8 @@ public class SettingsActivity extends Activity {
 	EditText port_input;
 	EditText command_input;
 	EditText camera_input;
+	
+	CheckBox cstayAwake;
 
 	
 	RadioGroup port_group;
@@ -56,6 +49,8 @@ public class SettingsActivity extends Activity {
 	String username = "";
 	String password = "";
 	String camera = "0";
+	
+	Boolean stayAwake = false;
 
 
 	String ip_command = "?action=stream";
@@ -84,16 +79,13 @@ public class SettingsActivity extends Activity {
         port_input = (EditText) findViewById(R.id.port_input);
         command_input = (EditText) findViewById(R.id.command_input);
 //        camera_input = (EditText) findViewById(R.id.camera_input);
+        cstayAwake = (CheckBox)findViewById(R.id.cStayAwake); 
 
         port_group = (RadioGroup) findViewById(R.id.port_radiogroup);
         command_group = (RadioGroup) findViewById(R.id.command_radiogroup);
         
         if(extras != null){
         	
-    			myAppWidgetId = extras.getInt(
-    					AppWidgetManager.EXTRA_APPWIDGET_ID, 
-    					AppWidgetManager.INVALID_APPWIDGET_ID);
-    		
         	width = extras.getString("width");
         	height = extras.getString("height");
 			
@@ -102,6 +94,7 @@ public class SettingsActivity extends Activity {
         	password = extras.getString("password");
         	ip_port = extras.getString("ip_port");
         	ip_command = extras.getString("ip_command");
+        	stayAwake = extras.getBoolean("stayAwake");
         	camera = "0";
 
         	width_input.setText(String.valueOf(width));
@@ -113,10 +106,24 @@ public class SettingsActivity extends Activity {
         	password_input.setText(String.valueOf(password));
         	port_input.setText(String.valueOf(ip_port));
         	command_input.setText(ip_command);
+        	cstayAwake.setChecked(stayAwake);
 //        	camera_input.setText(camera);
 
         }
+      
+        cstayAwake.setOnClickListener(new OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                if(cstayAwake.isChecked()){
+                	stayAwake = true;
+                }else{
+                	stayAwake = false;
+                }
+            }
+        });
+        
         resolution_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){  
 			public void onItemSelected(AdapterView<?> parent, View viw, int arg2, long arg3) {  
 				Spinner spinner = (Spinner)parent;  
@@ -208,21 +215,9 @@ public class SettingsActivity extends Activity {
         				intent.putExtra("password", password);
         				intent.putExtra("ip_port", ip_port);
         				intent.putExtra("ip_command", ip_command);
-        				
-        				SharedPreferences prefs = self.getSharedPreferences(PREFS_NAME, 0);
-        				SharedPreferences.Editor edit = prefs.edit();
-        				edit.putString(MOTION_WIDGET_HOSTNAME+myAppWidgetId, hostname);
-        				edit.putString(MOTION_WIDGET_USERNAME+myAppWidgetId, username);
-        				edit.putString(MOTION_WIDGET_PASSWORD+myAppWidgetId, password);
-        				edit.putString(MOTION_WIDGET_PORT+myAppWidgetId, ip_port);
-        				edit.putString(MOTION_WIDGET_WIDTH+myAppWidgetId, width);
-        				edit.putString(MOTION_WIDGET_HEIGHT+myAppWidgetId, height);
-        				edit.putString(MOTION_WIDGET_CAMERA+myAppWidgetId, "0");
+        				intent.putExtra("stayAwake", stayAwake);
 
-
-        				edit.commit();
-
-        	        
+        				        	        
         				setResult(RESULT_OK, intent);
         				finish();
         			}
