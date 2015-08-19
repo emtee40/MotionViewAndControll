@@ -76,6 +76,11 @@
                 android:inputType="text"
                 android:singleLine="true" />
         </LinearLayout>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/username_settings_label" />
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -91,6 +96,11 @@
                 android:inputType="text"
                 android:singleLine="true" />
         </LinearLayout>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/password_settings_label" />
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -103,7 +113,7 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:gravity="left|center_vertical"
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:singleLine="true" />
         </LinearLayout>
 

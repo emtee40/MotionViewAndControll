@@ -20,6 +20,9 @@
 
     <string name="auth_failed">Authentication Failed !!!\nPlease check Your Username/Password</string>
     <string name="ip_setting_label">Hostname(fqdn or ip)</string>
+        <string name="username_settings_label">Username</string>
+        <string name="password_settings_label">Password</string>
+        
     <string name="port_setting_label">Port</string>
     <string name="camera_setting_label">Camera Number</string>
     <string name="command_setting_label">Command</string>
