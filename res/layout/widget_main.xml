@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@drawable/toolbar"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
     <!-- http://www.iconarchive.com/category/application/button-icons-by-deleket.html -->
 
@@ -43,14 +43,19 @@
         android:background="@android:color/transparent"
         android:src="@drawable/snapshot_selector"
         android:text="Snapshot" />
-
-    <ImageButton
+    
+  
+     <ImageButton
         android:id="@+id/button_preview"
         android:layout_width="76sp"
         android:layout_height="64sp"
         android:layout_gravity="center_horizontal|center_vertical"
         android:background="@android:color/transparent"
-        android:src="@drawable/snapshot_selector"
+        android:src="@drawable/live_selector"
         android:text="Preview" />
-
+    
+  
 </LinearLayout>
+
+
+    
