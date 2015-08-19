@@ -3,7 +3,7 @@
 
     <string name="app_name">MotionViewAndControll</string>
     <string name="empty"></string>
-    <string name="settings">Settings</string>
+    <string name="settings">Live Settings</string>
     <string name="resolution_label">Resolution\n[please make sure that you set the correct resolution!!!]</string>
     <string name="resolution_times"> x </string>
 
