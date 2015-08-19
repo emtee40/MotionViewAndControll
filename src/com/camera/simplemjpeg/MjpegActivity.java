@@ -52,10 +52,10 @@ public class MjpegActivity extends Activity {
     // for settings (network and resolution)
     private static final int REQUEST_SETTINGS = 0;
     
-    private int width = 640;
-    private int height = 480;
+    private String width = "640";
+    private String height = "480";
     
-    private int ip_port = 80;
+    private String ip_port = "80";
     private String hostname = "192.168.1.1";
     private String username = "";
     private String password = "";
@@ -67,12 +67,12 @@ public class MjpegActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         SharedPreferences preferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
-        width = preferences.getInt("width", width);
-        height = preferences.getInt("height", height);
+        width = preferences.getString("width", width);
+        height = preferences.getString("height", height);
         hostname = preferences.getString("hostname", hostname);
         username = preferences.getString("username", username);
         password = preferences.getString("password", password);
-        ip_port = preferences.getInt("ip_port", ip_port);
+        ip_port = preferences.getString("ip_port", ip_port);
         ip_command = preferences.getString("ip_command", ip_command);
         
         String s_http = "http://";
@@ -170,9 +170,9 @@ public class MjpegActivity extends Activity {
     	switch (requestCode) {
     		case REQUEST_SETTINGS:
     			if (resultCode == Activity.RESULT_OK) {
-    				width = data.getIntExtra("width", width);
-    				height = data.getIntExtra("height", height);
-    				ip_port = data.getIntExtra("ip_port", ip_port);
+    				width = data.getStringExtra("width");
+    				height = data.getStringExtra("height");
+    				ip_port = data.getStringExtra("ip_port");
     				ip_command = data.getStringExtra("ip_command");
     				hostname = data.getStringExtra("hostname");
     				username = data.getStringExtra("username");
@@ -184,9 +184,9 @@ public class MjpegActivity extends Activity {
     				}
     				SharedPreferences preferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
     				SharedPreferences.Editor editor = preferences.edit();
-    				editor.putInt("width", width);
-    				editor.putInt("height", height);
-    				editor.putInt("ip_port", ip_port);
+    				editor.putString("width", width);
+    				editor.putString("height", height);
+    				editor.putString("ip_port", ip_port);
     				editor.putString("ip_command", ip_command);
     				editor.putString("hostname", hostname);
     				editor.putString("username", username);

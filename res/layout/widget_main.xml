@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/toolbar"
+    android:orientation="horizontal" >
+
+    <!-- http://www.iconarchive.com/category/application/button-icons-by-deleket.html -->
+
+    <ImageButton
+        android:id="@+id/button_status"
+        android:layout_width="76sp"
+        android:layout_height="64sp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:background="@android:color/transparent"
+        android:src="@drawable/status_selector"
+        android:text="Status" />
+
+    <ImageButton
+        android:id="@+id/button_start"
+        android:layout_width="76sp"
+        android:layout_height="64sp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:background="@android:color/transparent"
+        android:src="@drawable/start_selector"
+        android:text="Start" />
+
+    <ImageButton
+        android:id="@+id/button_pause"
+        android:layout_width="76sp"
+        android:layout_height="64sp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:background="@android:color/transparent"
+        android:src="@drawable/pause_selector"
+        android:text="Pause" />
+
+    <ImageButton
+        android:id="@+id/button_snapshot"
+        android:layout_width="76sp"
+        android:layout_height="64sp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:background="@android:color/transparent"
+        android:src="@drawable/snapshot_selector"
+        android:text="Snapshot" />
+
+    <ImageButton
+        android:id="@+id/button_preview"
+        android:layout_width="76sp"
+        android:layout_height="64sp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:background="@android:color/transparent"
+        android:src="@drawable/snapshot_selector"
+        android:text="Preview" />
+
+</LinearLayout>
