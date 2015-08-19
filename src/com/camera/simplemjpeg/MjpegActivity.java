@@ -26,11 +26,12 @@ import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 public class MjpegActivity extends Activity {
-	private static final boolean DEBUG=true;
+	private static final boolean DEBUG=false;
     private static final String TAG = "MJPEG";
     
     Message msg = new Message();
@@ -63,7 +64,7 @@ public class MjpegActivity extends Activity {
     private String ip_command = "?action=stream";
     
     private boolean suspending = false;
-     boolean stayAwake = false;
+     boolean stayAwake,fullScreen = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +78,7 @@ public class MjpegActivity extends Activity {
         ip_port = preferences.getString("ip_port", ip_port);
         ip_command = preferences.getString("ip_command", ip_command);
         stayAwake = preferences.getBoolean("stayAwake", false);
+        fullScreen = preferences.getBoolean("fullScreen", false);
 
         String s_http = "http://";
         String s_colon = ":";
@@ -92,7 +94,11 @@ public class MjpegActivity extends Activity {
         
         URL = new String(sb);
         Log.d(TAG,URL);
-
+        
+        if (fullScreen) {
+            requestWindowFeature(Window.FEATURE_NO_TITLE); 
+        }
+      
         setContentView(R.layout.main);
         mv = (MjpegView) findViewById(R.id.mv);  
         if(mv != null){
@@ -114,6 +120,17 @@ public class MjpegActivity extends Activity {
         if (stayAwake){
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } 
+        WindowManager.LayoutParams attrs = getWindow().getAttributes();
+
+        if (fullScreen) {
+                attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            }
+            else {
+                attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            	}
+
+            getWindow().setAttributes(attrs);   
+
 
     }
 
@@ -166,6 +183,7 @@ public class MjpegActivity extends Activity {
     			settings_intent.putExtra("username", username);
     			settings_intent.putExtra("password", password);
     			settings_intent.putExtra("stayAwake", stayAwake);
+    			settings_intent.putExtra("fullScreen", fullScreen);
 
     			startActivityForResult(settings_intent, REQUEST_SETTINGS);
     			return true;
@@ -185,6 +203,7 @@ public class MjpegActivity extends Activity {
     				username = data.getStringExtra("username");
     				password = data.getStringExtra("password");
     				stayAwake = data.getBooleanExtra("stayAwake",stayAwake);
+    				fullScreen = data.getBooleanExtra("fullScreen",fullScreen);
 
 
     				if(mv!=null){
@@ -200,6 +219,7 @@ public class MjpegActivity extends Activity {
     				editor.putString("username", username);
     				editor.putString("password", password);
     				editor.putBoolean("stayAwake", stayAwake);
+    				editor.putBoolean("fullScreen", fullScreen);
 
     				editor.commit();
 

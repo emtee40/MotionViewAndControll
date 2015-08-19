@@ -156,7 +156,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                                     }
                                     p.setXfermode(null);
                                     frameCounter++;
-                                    if((System.currentTimeMillis() - start) >= 1000) {
+                                    if((System.currentTimeMillis() - start) >= 5000) {
                                         fps = String.valueOf(frameCounter)+"fps";
                                         frameCounter = 0; 
                                         start = System.currentTimeMillis();

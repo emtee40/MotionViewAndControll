@@ -35,7 +35,7 @@ public class SettingsActivity extends Activity {
 	EditText command_input;
 	EditText camera_input;
 	
-	CheckBox cstayAwake;
+	CheckBox cstayAwake, cfullScreen;
 
 	
 	RadioGroup port_group;
@@ -50,7 +50,7 @@ public class SettingsActivity extends Activity {
 	String password = "";
 	String camera = "0";
 	
-	Boolean stayAwake = false;
+	Boolean stayAwake, fullScreen = false;
 
 
 	String ip_command = "?action=stream";
@@ -80,6 +80,7 @@ public class SettingsActivity extends Activity {
         command_input = (EditText) findViewById(R.id.command_input);
 //        camera_input = (EditText) findViewById(R.id.camera_input);
         cstayAwake = (CheckBox)findViewById(R.id.cStayAwake); 
+        cfullScreen = (CheckBox)findViewById(R.id.cFullScreen); 
 
         port_group = (RadioGroup) findViewById(R.id.port_radiogroup);
         command_group = (RadioGroup) findViewById(R.id.command_radiogroup);
@@ -95,6 +96,8 @@ public class SettingsActivity extends Activity {
         	ip_port = extras.getString("ip_port");
         	ip_command = extras.getString("ip_command");
         	stayAwake = extras.getBoolean("stayAwake");
+        	fullScreen = extras.getBoolean("fullScreen");
+
         	camera = "0";
 
         	width_input.setText(String.valueOf(width));
@@ -107,6 +110,8 @@ public class SettingsActivity extends Activity {
         	port_input.setText(String.valueOf(ip_port));
         	command_input.setText(ip_command);
         	cstayAwake.setChecked(stayAwake);
+        	cfullScreen.setChecked(fullScreen);
+
 //        	camera_input.setText(camera);
 
         }
@@ -124,6 +129,18 @@ public class SettingsActivity extends Activity {
             }
         });
         
+        cfullScreen.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                if(cfullScreen.isChecked()){
+                	fullScreen = true;
+                }else{
+                	fullScreen = false;
+                }
+            }
+        });
         resolution_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){  
 			public void onItemSelected(AdapterView<?> parent, View viw, int arg2, long arg3) {  
 				Spinner spinner = (Spinner)parent;  
@@ -216,6 +233,7 @@ public class SettingsActivity extends Activity {
         				intent.putExtra("ip_port", ip_port);
         				intent.putExtra("ip_command", ip_command);
         				intent.putExtra("stayAwake", stayAwake);
+        				intent.putExtra("fullScreen", fullScreen);
 
         				        	        
         				setResult(RESULT_OK, intent);
