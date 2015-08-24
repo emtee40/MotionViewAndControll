@@ -3,7 +3,7 @@
 
     <string name="app_name">MotionViewAndControll</string>
     <string name="empty"></string>
-    <string name="settings">Live Settings</string>
+    <string name="settings">Settings</string>
     <string name="resolution_label">Resolution\n[please make sure that you set the correct resolution!!!]</string>
     <string name="resolution_times"> x </string>
 
@@ -19,23 +19,20 @@
     </string-array>
 
     <string name="auth_failed">Authentication Failed !!!\nPlease check Your Username/Password</string>
-    <string name="ip_setting_label">Hostname(fqdn or ip)</string>
-        <string name="username_settings_label">Username</string>
-        <string name="password_settings_label">Password</string>
+    <string name="ip_setting_label">Live Hostname(fqdn or ip)</string>
+    <string name="control_ip_setting_label">Control Hostname(fqdn or ip)</string>
+    
+    <string name="username_settings_label">Live Username</string>
+    <string name="control_username_settings_label">Control Username</string>
+    
+    <string name="password_settings_label">Live Password</string>
+    <string name="control_password_settings_label">Control Password</string>
         
-    <string name="port_setting_label">Port</string>
-    <string name="camera_setting_label">Camera Number</string>
-    <string name="command_setting_label">Command</string>
-    <string name="address_dot">.</string>
-    <string name="port_80">80</string>
-    <string name="port_8080">8080</string>
-    <string name="port_80_with_explanation">80 (for Ai-ball)</string>
-    <string name="port_8080_with_explanation">8080 (for IP Webcam)</string>
-    <string name="command_streaming">\?action=stream</string>
-    <string name="command_videofeed">videofeed</string>
-    <string name="command_streaming_with_explanation">\?action=stream (for Ai-ball)</string>
-    <string name="command_videofeed_with_explanation">videofeed (for IP Webcam)</string>
-	<string name="StayAwake">Stay Awake</string>
+    <string name="port_setting_label">Live Port</string>
+    <string name="control_port_setting_label">Control Port</string>
+    <string name="control_camera_setting_label">Control Camera</string>
+    
+    <string name="StayAwake">Stay Awake</string>
     <string name="FullScreen">Full Screen</string>
     <string name="settings_done">Done</string>
 

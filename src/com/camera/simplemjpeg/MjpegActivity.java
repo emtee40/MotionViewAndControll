@@ -58,11 +58,16 @@ public class MjpegActivity extends Activity {
     private String height = "480";
     
     private String ip_port = "80";
-    private String hostname = "192.168.1.1";
+    private String hostname = "http://192.168.1.1";
     private String username = "";
     private String password = "";
-    private String ip_command = "?action=stream";
     
+    private String control_ip_port = "81";
+    private String control_hostname = "http://192.168.1.1";
+    private String control_username = "";
+    private String control_password = "";
+    private String control_camera = "0";
+
     private boolean suspending = false;
      boolean stayAwake,fullScreen = false;
 
@@ -76,22 +81,22 @@ public class MjpegActivity extends Activity {
         username = preferences.getString("username", username);
         password = preferences.getString("password", password);
         ip_port = preferences.getString("ip_port", ip_port);
-        ip_command = preferences.getString("ip_command", ip_command);
+        control_hostname = preferences.getString("control_hostname", control_hostname);
+        control_username = preferences.getString("control_username", control_username);
+        control_password = preferences.getString("control_password", control_password);
+        control_ip_port = preferences.getString("control_ip_port", control_ip_port);
+        control_camera = preferences.getString("control_camera", control_camera);
+
         stayAwake = preferences.getBoolean("stayAwake", false);
         fullScreen = preferences.getBoolean("fullScreen", false);
 
-        String s_http = "http://";
         String s_colon = ":";
-        String s_slash = "/";
                 
         StringBuilder sb = new StringBuilder();
-        sb.append(s_http);
         sb.append(hostname);
         sb.append(s_colon);
         sb.append(ip_port);
-        sb.append(s_slash);
-        sb.append(ip_command);
-        
+       
         URL = new String(sb);
         Log.d(TAG,URL);
         
@@ -178,10 +183,15 @@ public class MjpegActivity extends Activity {
     			settings_intent.putExtra("width", width);
     			settings_intent.putExtra("height", height);
     			settings_intent.putExtra("ip_port", ip_port);
-    			settings_intent.putExtra("ip_command", ip_command);
     			settings_intent.putExtra("hostname", hostname);
     			settings_intent.putExtra("username", username);
     			settings_intent.putExtra("password", password);
+    			settings_intent.putExtra("control_ip_port", control_ip_port);
+    			settings_intent.putExtra("control_hostname", control_hostname);
+    			settings_intent.putExtra("control_username", control_username);
+    			settings_intent.putExtra("control_password", control_password);
+    			settings_intent.putExtra("control_camera", control_camera);
+
     			settings_intent.putExtra("stayAwake", stayAwake);
     			settings_intent.putExtra("fullScreen", fullScreen);
 
@@ -198,10 +208,15 @@ public class MjpegActivity extends Activity {
     				width = data.getStringExtra("width");
     				height = data.getStringExtra("height");
     				ip_port = data.getStringExtra("ip_port");
-    				ip_command = data.getStringExtra("ip_command");
     				hostname = data.getStringExtra("hostname");
     				username = data.getStringExtra("username");
     				password = data.getStringExtra("password");
+    				control_ip_port = data.getStringExtra("control_ip_port");
+    				control_hostname = data.getStringExtra("control_hostname");
+    				control_username = data.getStringExtra("control_username");
+    				control_password = data.getStringExtra("control_password");
+    				control_camera = data.getStringExtra("control_camera");
+
     				stayAwake = data.getBooleanExtra("stayAwake",stayAwake);
     				fullScreen = data.getBooleanExtra("fullScreen",fullScreen);
 
@@ -214,10 +229,15 @@ public class MjpegActivity extends Activity {
     				editor.putString("width", width);
     				editor.putString("height", height);
     				editor.putString("ip_port", ip_port);
-    				editor.putString("ip_command", ip_command);
     				editor.putString("hostname", hostname);
     				editor.putString("username", username);
     				editor.putString("password", password);
+    				editor.putString("control_ip_port", control_ip_port);
+    				editor.putString("control_hostname", control_hostname);
+    				editor.putString("control_username", control_username);
+    				editor.putString("control_password", control_password);
+    				editor.putString("control_camera", control_camera);
+
     				editor.putBoolean("stayAwake", stayAwake);
     				editor.putBoolean("fullScreen", fullScreen);
 

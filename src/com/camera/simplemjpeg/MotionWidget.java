@@ -5,10 +5,13 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
+import android.widget.EditText;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -19,16 +22,21 @@ public class MotionWidget extends AppWidgetProvider {
 	public static String ACTION_WIDGET_PAUSE = "ActionWidgetPause";
 	public static String ACTION_WIDGET_SNAPSHOT = "ActionWidgetSnapshot";
 	public static String ACTION_WIDGET_PREVIEW = "ActionWidgetPreview";
-
-	  
+	public static String ACTION_WIDGET_UPDATE = "ActionWidgetUpdate";
+	
+    private RemoteViews remoteViewsUpdate;
+    
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 	  RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_main);
+	  
+	    SharedPreferences prefs = context.getSharedPreferences("SAVED_VALUES", Context.MODE_PRIVATE);
 
-	  int numWidgets = appWidgetIds.length;
-	  for (int i=0; i<numWidgets; i++) {
-		  int appWidgetId = appWidgetIds[i];
+		int numWidgets = appWidgetIds.length;
+		for (int i = 0; i < numWidgets; i++) {
+			int appWidgetId = appWidgetIds[i];
+			
 
 		  Intent statusIntent = new Intent(context, MotionWidget.class);
 		  statusIntent.setAction(ACTION_WIDGET_STATUS);
@@ -62,24 +70,25 @@ public class MotionWidget extends AppWidgetProvider {
 		  remoteViews.setOnClickPendingIntent(R.id.button_pause, pausePendingIntent);
 		  remoteViews.setOnClickPendingIntent(R.id.button_snapshot, snapshotPendingIntent);
 		  remoteViews.setOnClickPendingIntent(R.id.button_preview, previewPendingIntent);
-		  
-				
+		  remoteViews.setTextViewText(R.id.control_hostname, prefs.getString("control_hostname", ""));
+		  remoteViews.setTextViewText(R.id.control_username, prefs.getString("control_username", ""));
+		  remoteViews.setTextViewText(R.id.control_password, prefs.getString("control_password", ""));
+		  remoteViews.setTextViewText(R.id.control_port_input, prefs.getString("control_port_input", ""));
+		  remoteViews.setTextViewText(R.id.camNum, prefs.getString("control_camera", ""));
 
-		
 		  appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
 	  }
 	}
 	
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		
-		
 		 
 	    Thread thread = new Thread(){
 	        @Override
 	        public void run() {
 	            try {
 	            	Looper.prepare();
+	            	
 	            	
 	            	 Handler handler = new Handler(new Handler.Callback() {
 
@@ -88,7 +97,7 @@ public class MotionWidget extends AppWidgetProvider {
 	     		            if(msg.arg1==1)
 	     		            {
 	     		            	String message = (String) msg.obj;
-	     		            	Toast.makeText(context, message ,Toast.LENGTH_LONG).show();
+	     		            	Toast.makeText(context, message ,Toast.LENGTH_SHORT).show();
 	     		            }
 	     		            return false;
 	     		        }
@@ -104,29 +113,53 @@ public class MotionWidget extends AppWidgetProvider {
 	        		String externalUrlBase = MotionWidgetConfigure.loadPrefernece(context, MotionWidgetConfigure.MOTION_WIDGET_EXTERNAL, mAppWidgetId);
 	        		String internalUrlBase = MotionWidgetConfigure.loadPrefernece(context, MotionWidgetConfigure.MOTION_WIDGET_INTERNAL, mAppWidgetId);
 	        		String password = MotionWidgetConfigure.loadPrefernece(context, MotionWidgetConfigure.MOTION_WIDGET_PASSWORD, mAppWidgetId);
+	        		String port = MotionWidgetConfigure.loadPrefernece(context, MotionWidgetConfigure.MOTION_WIDGET_PORT, mAppWidgetId);
+
 	        		String username = MotionWidgetConfigure.loadPrefernece(context, MotionWidgetConfigure.MOTION_WIDGET_USERNAME, mAppWidgetId);
 	        		String cameraNumber = MotionWidgetConfigure.loadPrefernece(context, MotionWidgetConfigure.MOTION_WIDGET_CAMERA, mAppWidgetId);
-	        		
-	        		MotionCamera camera = new MotionCamera(externalUrlBase, internalUrlBase, cameraNumber, username, password);
-	        		
+
+	        		MotionCamera camera = new MotionCamera(externalUrlBase, internalUrlBase, port, cameraNumber, username, password);
         			Message msg = new Message();
+        			String status = "";
+        			remoteViewsUpdate = new RemoteViews( context.getPackageName(), R.layout.widget_main );
         			
-	        		if (intent.getAction().equals(ACTION_WIDGET_STATUS)) {
-	        			msg.obj = camera.getStatus();
-	        		} else if (intent.getAction().equals(ACTION_WIDGET_START)) {
-	        			msg.obj = camera.startDetection();
-	        		} else if (intent.getAction().equals(ACTION_WIDGET_PAUSE)) {
-	        			msg.obj = camera.pauseDetection();
-	        		} else if (intent.getAction().equals(ACTION_WIDGET_SNAPSHOT)) {
-	        			msg.obj = camera.snapshot();
-	        		} 			
-	        		
-	        		if (msg.obj != null) {
+					if (intent.getAction().equals(ACTION_WIDGET_STATUS) || intent.getAction().equals(ACTION_WIDGET_UPDATE)) {
+						msg.obj = camera.getStatus();
+						status = (String) msg.obj;
+
+					} else if (intent.getAction().equals(ACTION_WIDGET_START)) {
+						msg.obj = camera.startDetection();
+						status = (String) msg.obj;
+						 
+					} else if (intent.getAction().equals(ACTION_WIDGET_PAUSE)) {
+						msg.obj = camera.pauseDetection();
+						status = (String) msg.obj;
+						
+					} else if (intent.getAction().equals(ACTION_WIDGET_SNAPSHOT)) {
+						msg.obj = camera.snapshot();
+						status = (String) msg.obj;
+					}
+
+	        		if (msg.obj != null && !intent.getAction().equals(ACTION_WIDGET_UPDATE)) {
 	        			msg.arg1=1;
 	                    handler.sendMessage(msg); 
-	        			//Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 	        		}
+	        		
+	        		if (status.contains("PAUSED") ||status.contains("Paused")) {
+						remoteViewsUpdate.setImageViewResource(R.id.button_pause,R.drawable.pause_pressed);
+						remoteViewsUpdate.setImageViewResource(R.id.button_start, R.drawable.start);
 
+					} else if (status.contains("ACTIVE") || status.contains("Started")) {
+						remoteViewsUpdate.setImageViewResource(R.id.button_pause, R.drawable.pause);
+						remoteViewsUpdate.setImageViewResource(R.id.button_start,R.drawable.start_pressed);
+					} else {
+						remoteViewsUpdate.setImageViewResource(R.id.button_pause, R.drawable.pause);
+						remoteViewsUpdate.setImageViewResource(R.id.button_start,R.drawable.start);
+						remoteViewsUpdate.setImageViewResource(R.drawable.toolbar,R.drawable.toolbar_disabled);
+					}
+	        		
+	        		remoteViewsUpdate.setTextViewText(R.id.camNum, "cam."+cameraNumber);
+	        		(AppWidgetManager.getInstance(context)).updateAppWidget(mAppWidgetId,remoteViewsUpdate);
 	        		
 
 	            } catch (Exception e) {
@@ -142,4 +175,5 @@ public class MotionWidget extends AppWidgetProvider {
 	  super.onReceive(context, intent);
 
 	}	
+	
 }

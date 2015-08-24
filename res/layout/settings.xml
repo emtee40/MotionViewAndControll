@@ -136,31 +136,13 @@
                 android:inputType="number"
                 android:maxLength="4"
                 android:singleLine="true" />
-
-            <RadioGroup
-                android:id="@+id/port_radiogroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                <RadioButton
-                    android:id="@+id/port_80"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/port_80_with_explanation" />
-
-                <RadioButton
-                    android:id="@+id/port_8080"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/port_8080_with_explanation" />
-            </RadioGroup>
+       
         </LinearLayout>
-
-        <TextView
+        
+                <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/command_setting_label" />
+            android:text="@string/control_ip_setting_label" />
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -169,33 +151,97 @@
             android:orientation="horizontal" >
 
             <EditText
-                android:id="@+id/command_input"
+                android:id="@+id/control_hostname"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:gravity="left|center_vertical"
                 android:inputType="text"
                 android:singleLine="true" />
         </LinearLayout>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/control_username_settings_label" />
 
-        <RadioGroup
-            android:id="@+id/command_radiogroup"
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="horizontal" >
 
-            <RadioButton
-                android:id="@+id/command_streaming"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/control_username"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="@string/command_streaming_with_explanation" />
+                android:gravity="left|center_vertical"
+                android:inputType="text"
+                android:singleLine="true" />
+        </LinearLayout>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/control_password_settings_label" />
 
-            <RadioButton
-                android:id="@+id/command_videofeed"
-                android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/control_password"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="@string/command_videofeed_with_explanation" />
-        </RadioGroup>
+                android:gravity="left|center_vertical"
+                android:inputType="textPassword"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/control_port_setting_label" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/control_port_input"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:gravity="right|center_vertical"
+                android:inputType="number"
+                android:maxLength="4"
+                android:singleLine="true" />
+       
+        </LinearLayout>
+        
+         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/control_camera_setting_label" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/control_camera_input"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:gravity="right|center_vertical"
+                android:inputType="number"
+                android:maxLength="4"
+                android:singleLine="true" />
+       
+        </LinearLayout>
 
         <CheckBox
             android:id="@+id/cStayAwake"

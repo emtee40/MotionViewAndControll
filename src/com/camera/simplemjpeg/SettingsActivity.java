@@ -32,14 +32,16 @@ public class SettingsActivity extends Activity {
 	EditText username_input;
 	EditText password_input;
 	EditText port_input;
-	EditText command_input;
-	EditText camera_input;
 	
+	EditText control_hostname_input;
+	EditText control_username_input;
+	EditText control_password_input;
+	EditText control_port_input;
+	EditText control_camera_input;
+
 	CheckBox cstayAwake, cfullScreen;
 
 	
-	RadioGroup port_group;
-	RadioGroup command_group;
 	
 	String width = "640";
 	String height = "480";
@@ -48,12 +50,19 @@ public class SettingsActivity extends Activity {
 	String hostname = "192.168.1.1";
 	String username = "";
 	String password = "";
+	
+	String control_ip_port = "81";
+	String control_hostname = "192.168.1.1";
+	String control_username = "";
+	String control_password = "";
+	String control_camera = "0";
+
+	
 	String camera = "0";
 	
 	Boolean stayAwake, fullScreen = false;
 
 
-	String ip_command = "?action=stream";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,13 +86,16 @@ public class SettingsActivity extends Activity {
         username_input = (EditText) findViewById(R.id.username);
         password_input = (EditText) findViewById(R.id.password);
         port_input = (EditText) findViewById(R.id.port_input);
-        command_input = (EditText) findViewById(R.id.command_input);
-//        camera_input = (EditText) findViewById(R.id.camera_input);
+        
+        control_hostname_input = (EditText) findViewById(R.id.control_hostname);
+        control_username_input = (EditText) findViewById(R.id.control_username);
+        control_password_input = (EditText) findViewById(R.id.control_password);
+        control_port_input = (EditText) findViewById(R.id.control_port_input);
+        control_camera_input = (EditText) findViewById(R.id.control_camera_input);
+
         cstayAwake = (CheckBox)findViewById(R.id.cStayAwake); 
         cfullScreen = (CheckBox)findViewById(R.id.cFullScreen); 
 
-        port_group = (RadioGroup) findViewById(R.id.port_radiogroup);
-        command_group = (RadioGroup) findViewById(R.id.command_radiogroup);
         
         if(extras != null){
         	
@@ -94,7 +106,13 @@ public class SettingsActivity extends Activity {
         	username = extras.getString("username");
         	password = extras.getString("password");
         	ip_port = extras.getString("ip_port");
-        	ip_command = extras.getString("ip_command");
+        	
+        	control_hostname = extras.getString("control_hostname");
+        	control_username = extras.getString("control_username");
+        	control_password = extras.getString("control_password");
+        	control_ip_port = extras.getString("control_ip_port");
+        	control_camera = extras.getString("control_camera");
+
         	stayAwake = extras.getBoolean("stayAwake");
         	fullScreen = extras.getBoolean("fullScreen");
 
@@ -108,11 +126,16 @@ public class SettingsActivity extends Activity {
         	username_input.setText(String.valueOf(username));
         	password_input.setText(String.valueOf(password));
         	port_input.setText(String.valueOf(ip_port));
-        	command_input.setText(ip_command);
+        	
+        	control_hostname_input.setText(String.valueOf(control_hostname));
+        	control_username_input.setText(String.valueOf(control_username));
+        	control_password_input.setText(String.valueOf(control_password));
+        	control_port_input.setText(String.valueOf(control_ip_port));
+        	control_camera_input.setText(String.valueOf(control_camera));
+
         	cstayAwake.setChecked(stayAwake);
         	cfullScreen.setChecked(fullScreen);
 
-//        	camera_input.setText(camera);
 
         }
       
@@ -174,28 +197,7 @@ public class SettingsActivity extends Activity {
             }
         }); 
 
-       
-        
-        port_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            public void onCheckedChanged(RadioGroup group, int checkedId) { 
-                if(checkedId == R.id.port_80){
-                	port_input.setText(getString(R.string.port_80));
-                }else if(checkedId == R.id.port_8080){
-                	port_input.setText(getString(R.string.port_8080));
-                }
-            }
-        });
-        
-        command_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            public void onCheckedChanged(RadioGroup group, int checkedId) { 
-                if(checkedId == R.id.command_streaming){
-                	command_input.setText(getString(R.string.command_streaming));
-                }else if(checkedId == R.id.command_videofeed){
-                	command_input.setText(getString(R.string.command_videofeed));
-                }
-            }
-        });
-        
+              
         settings_done = (Button)findViewById(R.id.settings_done);
         settings_done.setOnClickListener(
         		new View.OnClickListener(){
@@ -215,15 +217,20 @@ public class SettingsActivity extends Activity {
         				username = s;
         				s = password_input.getText().toString();
         				password = s;
-        				
         				s = port_input.getText().toString();
         				ip_port = s;
+ 			
+        				s = control_hostname_input.getText().toString();
+        				control_hostname = s;
+        				s = control_username_input.getText().toString();
+        				control_username = s;
+        				s = control_password_input.getText().toString();
+        				control_password = s;
+        				s = control_port_input.getText().toString();
+        				control_ip_port = s;
+        				s = control_camera_input.getText().toString();
+        				control_camera = s;
         				
-        				
-        				s = command_input.getText().toString();
-        				ip_command = s;
-//        				s = camera_input.getText().toString();
-//        				camera = s;
         				Intent intent = new Intent();
         				intent.putExtra("width", width);
         				intent.putExtra("height", height);
@@ -231,7 +238,13 @@ public class SettingsActivity extends Activity {
         				intent.putExtra("username", username);
         				intent.putExtra("password", password);
         				intent.putExtra("ip_port", ip_port);
-        				intent.putExtra("ip_command", ip_command);
+        				
+        				intent.putExtra("control_hostname", control_hostname);
+        				intent.putExtra("control_username", control_username);
+        				intent.putExtra("control_password", control_password);
+        				intent.putExtra("control_ip_port", control_ip_port);
+        				intent.putExtra("control_camera", control_camera);
+
         				intent.putExtra("stayAwake", stayAwake);
         				intent.putExtra("fullScreen", fullScreen);
 
