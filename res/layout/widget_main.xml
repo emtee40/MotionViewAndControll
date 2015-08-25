@@ -9,16 +9,7 @@
     <!-- http://www.iconarchive.com/category/application/button-icons-by-deleket.html -->
 
     <ImageButton
-        android:id="@+id/button_status"
-        android:layout_width="76sp"
-        android:layout_height="64sp"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:background="@android:color/transparent"
-        android:src="@drawable/status_selector"
-        android:text="Status" />
-
-    <ImageButton
-        android:id="@+id/button_start"
+        android:id="@+id/button_toggle"
         android:layout_width="76sp"
         android:layout_height="64sp"
         android:layout_gravity="center_horizontal|center_vertical"
@@ -26,14 +17,7 @@
         android:src="@drawable/start_selector"
         android:text="Start" />
 
-    <ImageButton
-        android:id="@+id/button_pause"
-        android:layout_width="76sp"
-        android:layout_height="64sp"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:background="@android:color/transparent"
-        android:src="@drawable/pause_selector"
-        android:text="Pause" />
+  
 
     <ImageButton
         android:id="@+id/button_snapshot"

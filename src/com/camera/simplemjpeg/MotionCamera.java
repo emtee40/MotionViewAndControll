@@ -107,6 +107,37 @@ public class MotionCamera {
 		}
 	}
 	
+	public String toggleDetection() {
+		try {
+			String Status = this.getStatus();
+			if (Status.contains("PAUSED") || Status.contains("Paused")) {
+				try {
+					return makeStartRequest(client, String.format(START_URL_TEMPLATE, externalUrlBase, port, camera));
+				} catch (HttpHostConnectException e) {
+					return makeStartRequest(client, String.format(START_URL_TEMPLATE, internalUrlBase, port, camera));
+				}
+
+			} else if (Status.contains("ACTIVE") || Status.contains("Started")) {
+				try {
+					return makePauseRequest(client, String.format(PAUSE_URL_TEMPLATE, externalUrlBase, port, camera));
+				} catch (HttpHostConnectException e) {
+					return makePauseRequest(client, String.format(PAUSE_URL_TEMPLATE, internalUrlBase, port, camera));
+				}
+
+			} else {
+				try {
+					return makeStartRequest(client, String.format(START_URL_TEMPLATE, externalUrlBase, port, camera));
+				} catch (HttpHostConnectException e) {
+					return makeStartRequest(client, String.format(START_URL_TEMPLATE, internalUrlBase, port, camera));
+				}
+
+			}
+
+		} catch (Throwable t) {
+			return "Unable to connect to Motion";
+		}
+	}
+	
 	public String startDetection() {
 		try {
 			try {
