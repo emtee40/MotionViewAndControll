@@ -55,8 +55,6 @@ public RemoteViews remoteViewsUpdateOnce;
     	ComponentName widgetComponent = new ComponentName(this,MotionWidget.class);
     	int[] widgetIds = widgetManager.getAppWidgetIds(widgetComponent);
     	
-    	
-    	
     	int numWidgets = widgetIds.length;
 		for (int i = 0; i < numWidgets; i++) {
 			int mAppWidgetId = widgetIds[i];

@@ -15,16 +15,16 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import com.camera.simplemjpeg.R;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.StrictMode;
 import android.util.Log;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,7 +32,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class MjpegActivity extends Activity  {
+public class MjpegActivity extends Activity {
 	private static final boolean DEBUG=false;
     private static final String TAG = "MJPEG";
     
@@ -72,16 +72,10 @@ public class MjpegActivity extends Activity  {
     private String control_interval = "3600";
 
     private boolean suspending = false;
-    boolean stayAwake,fullScreen = false;
+     boolean stayAwake,fullScreen = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-        
 
         SharedPreferences preferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
         width = preferences.getString("width", width);
@@ -99,8 +93,8 @@ public class MjpegActivity extends Activity  {
 
         stayAwake = preferences.getBoolean("stayAwake", false);
         fullScreen = preferences.getBoolean("fullScreen", false);
-        
-        URI aURL = null;
+
+        	URI aURL = null;
         
         try {
         	aURL = new URI(hostname);
@@ -168,12 +162,7 @@ public class MjpegActivity extends Activity  {
     public void onPause() {
     	if(DEBUG) Log.d(TAG,"onPause()");
         super.onPause();
-        if(mv!=null){
-        	if(mv.isStreaming()){
-		        mv.stopPlayback();
-		        suspending = true;
-        	}
-        }
+    	new pauseTask().execute();
     }
     public void onStop() {
     	if(DEBUG) Log.d(TAG,"onStop()");
@@ -181,12 +170,10 @@ public class MjpegActivity extends Activity  {
     }
 
     public void onDestroy() {
+        super.onDestroy();
+
     	if(DEBUG) Log.d(TAG,"onDestroy()");
-    	
-    	if(mv!=null){
-    		mv.freeCameraMemory();
-    	}
-    	
+    	new stopTask().execute();
         super.onDestroy();
     }
     
@@ -213,10 +200,10 @@ public class MjpegActivity extends Activity  {
     			settings_intent.putExtra("control_username", control_username);
     			settings_intent.putExtra("control_password", control_password);
     			settings_intent.putExtra("control_camera", control_camera);
+    			settings_intent.putExtra("control_interval", control_interval);
 
     			settings_intent.putExtra("stayAwake", stayAwake);
     			settings_intent.putExtra("fullScreen", fullScreen);
-    			settings_intent.putExtra("control_interval", control_interval);
 
     			startActivityForResult(settings_intent, REQUEST_SETTINGS);
     			return true;
@@ -239,10 +226,10 @@ public class MjpegActivity extends Activity  {
     				control_username = data.getStringExtra("control_username");
     				control_password = data.getStringExtra("control_password");
     				control_camera = data.getStringExtra("control_camera");
+    				control_interval = data.getStringExtra("control_interval");
 
     				stayAwake = data.getBooleanExtra("stayAwake",stayAwake);
     				fullScreen = data.getBooleanExtra("fullScreen",fullScreen);
-    				control_interval = data.getStringExtra("control_interval");
 
 
     				if(mv!=null){
@@ -261,10 +248,10 @@ public class MjpegActivity extends Activity  {
     				editor.putString("control_username", control_username);
     				editor.putString("control_password", control_password);
     				editor.putString("control_camera", control_camera);
+    				editor.putString("control_interval", control_interval);
 
     				editor.putBoolean("stayAwake", stayAwake);
     				editor.putBoolean("fullScreen", fullScreen);
-    				editor.putString("control_interval", control_interval);
 
     				editor.commit();
 
@@ -292,7 +279,7 @@ public class MjpegActivity extends Activity  {
             
             
             HttpParams httpParams = httpclient.getParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, 10*1000);
+            HttpConnectionParams.setConnectionTimeout(httpParams, 5*1000);
             
             Log.d(TAG, "1. Sending http request");
             try {
@@ -341,7 +328,38 @@ public class MjpegActivity extends Activity  {
         	startActivity((new Intent(MjpegActivity.this, MjpegActivity.class)));
         }
     }
+    
+    class stopTask extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... v) {
+            try {
+            	if(mv!=null){
+            		mv.freeCameraMemory();
+            	}
 
+            } catch (Exception e) {
 
+            }
+			return null;
+        }
+       
+    }
+    class pauseTask extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... v) {
+            try {
+            	 if(mv!=null){
+            	    	if(mv.isStreaming()){
+            		        mv.stopPlayback();
+            		        suspending = true;
+            	    	}
+            	    }
+
+            } catch (Exception e) {
+
+            }
+			return null;
+        }
+       
+    }
+   
 }
 

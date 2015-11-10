@@ -35,9 +35,7 @@ public class MotionWidget extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 	  super.onUpdate(context, appWidgetManager, appWidgetIds);
-	
-	    
-
+	 
 		int numWidgets = appWidgetIds.length;
 		for (int i = 0; i < numWidgets; i++) {
 			int appWidgetId = appWidgetIds[i];
@@ -47,9 +45,9 @@ public class MotionWidget extends AppWidgetProvider {
 		            appWidgetHost.deleteAppWidgetId(appWidgetId);
 		            continue;
 		        }
-		 SharedPreferences prefs = context.getSharedPreferences("SAVED_VALUES", Context.MODE_PRIVATE);
+		SharedPreferences prefs = context.getSharedPreferences("SAVED_VALUES", Context.MODE_PRIVATE);
 
-		  RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_main);
+		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_main);
 		
 		  Intent toggleIntent = new Intent(context, MotionWidget.class);
 		  toggleIntent.setAction(ACTION_WIDGET_TOGGLE);
@@ -76,27 +74,31 @@ public class MotionWidget extends AppWidgetProvider {
 		  remoteViews.setTextViewText(R.id.control_password, prefs.getString("control_password", ""));
 		  remoteViews.setTextViewText(R.id.control_port_input, prefs.getString("control_port_input", ""));
 		  remoteViews.setTextViewText(R.id.camNum, prefs.getString("control_camera", ""));
-//		  int interval = Integer.parseInt(prefs.getString("control_interval",""));
-//	      Log.d("interval:" +i, ""+interval);
+		  
+		  int control_interval = Integer.parseInt(prefs.getString("control_interval", ""));
+		  
+		  AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-		
-			  AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+	      Calendar TIME = Calendar.getInstance();
+	      TIME.set(Calendar.MINUTE, 0);
+	      TIME.set(Calendar.SECOND, 0);
+	      TIME.set(Calendar.MILLISECOND, 0);
 
-		      Calendar TIME = Calendar.getInstance();
-		      TIME.set(Calendar.MINUTE, 0);
-		      TIME.set(Calendar.SECOND, 0);
-		      TIME.set(Calendar.MILLISECOND, 0);
-
-		      Intent in = new Intent(context, MyService.class);
-
+	      Intent in = new Intent(context, MyService.class);
+		  
+		  if (control_interval >= 1 ){
 		      if (service == null)
 		      {
 		          service = PendingIntent.getService(context, 0, in, PendingIntent.FLAG_UPDATE_CURRENT);
 		      }
 
-		      m.setRepeating(AlarmManager.RTC, TIME.getTime().getTime(), 1000 * 600, service);
-//		      Log.d("interval: ", ""+interval);
-  
+		      m.setRepeating(AlarmManager.RTC, TIME.getTime().getTime(), 1000 * 60 * control_interval, service);
+		  } else {
+			  
+			  m.cancel(service);
+			  
+		  }
+		  
 		 		  		  
 		  appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
 	  }
