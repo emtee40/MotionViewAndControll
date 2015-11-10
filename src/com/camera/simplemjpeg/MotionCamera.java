@@ -31,13 +31,14 @@ import android.util.Log;
 
 public class MotionCamera {
 
-	private static final String STATUS_URL_TEMPLATE = "%s:%s/%s/detection/status";
-	private static final String START_URL_TEMPLATE = "%s:%s/%s/detection/start";
-	private static final String PAUSE_URL_TEMPLATE = "%s:%s/%s/detection/pause";
-	private static final String SNAPSHOT_URL_TEMPLATE = "%s:%s/%s/action/snapshot";
+	private static final String STATUS_URL_TEMPLATE 	= "%s:%s/%s/%s/detection/status";
+	private static final String START_URL_TEMPLATE 		= "%s:%s/%s/%s/detection/start";
+	private static final String PAUSE_URL_TEMPLATE 		= "%s:%s/%s/%s/detection/pause";
+	private static final String SNAPSHOT_URL_TEMPLATE 	= "%s:%s/%s/%s/action/snapshot";
 	
 	private final String externalUrlBase;
 	private final String internalUrlBase;	
+	private final String path;	
 	private final String port;	
 	private final String username;	
 	private final String password;	
@@ -45,22 +46,24 @@ public class MotionCamera {
 	private final String camera;	
     DefaultHttpClient client = new DefaultHttpClient();
 
-	public MotionCamera(String externalUrlBase, String internalUrlBase, String port, String camera, String username, String password) {
+	public MotionCamera(String externalUrlBase, String internalUrlBase, String port, String path, String camera, String username, String password) {
 		this.externalUrlBase = externalUrlBase;
 		this.internalUrlBase = internalUrlBase;
 		this.port = port;
+		this.path = path;
 		this.username = username;
 		this.password = password;
 		this.camera = camera;
 		
 	}
 	
+
 	public String getStatus() {
 		try {
 			try {
-				return makeStatusRequest(client, String.format(STATUS_URL_TEMPLATE, externalUrlBase, port, camera));
+				return makeStatusRequest(client, String.format(STATUS_URL_TEMPLATE, externalUrlBase, port, path, camera));
 			} catch (HttpHostConnectException e) {
-				return makeStatusRequest(client, String.format(STATUS_URL_TEMPLATE, internalUrlBase, port, camera));
+				return makeStatusRequest(client, String.format(STATUS_URL_TEMPLATE, internalUrlBase, port, path, camera));
 			}
 		} catch (Throwable t) {
 			return "Unable to connect to Motion "+t;
@@ -82,7 +85,7 @@ public class MotionCamera {
         }
         
         HttpParams httpParams = httpclient.getParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, 5*1000);
+        HttpConnectionParams.setConnectionTimeout(httpParams, 10*1000);
         response = httpclient.execute(new HttpGet(statusUrl));
 		
 		int status = response.getStatusLine().getStatusCode();
@@ -112,23 +115,23 @@ public class MotionCamera {
 			String Status = this.getStatus();
 			if (Status.contains("PAUSED") || Status.contains("Paused")) {
 				try {
-					return makeStartRequest(client, String.format(START_URL_TEMPLATE, externalUrlBase, port, camera));
+					return makeStartRequest(client, String.format(START_URL_TEMPLATE, externalUrlBase, port, path, camera));
 				} catch (HttpHostConnectException e) {
-					return makeStartRequest(client, String.format(START_URL_TEMPLATE, internalUrlBase, port, camera));
+					return makeStartRequest(client, String.format(START_URL_TEMPLATE, internalUrlBase, port, path, camera));
 				}
 
 			} else if (Status.contains("ACTIVE") || Status.contains("Started")) {
 				try {
-					return makePauseRequest(client, String.format(PAUSE_URL_TEMPLATE, externalUrlBase, port, camera));
+					return makePauseRequest(client, String.format(PAUSE_URL_TEMPLATE, externalUrlBase, port, path, camera));
 				} catch (HttpHostConnectException e) {
-					return makePauseRequest(client, String.format(PAUSE_URL_TEMPLATE, internalUrlBase, port, camera));
+					return makePauseRequest(client, String.format(PAUSE_URL_TEMPLATE, internalUrlBase, port, path, camera));
 				}
 
 			} else {
 				try {
-					return makeStartRequest(client, String.format(START_URL_TEMPLATE, externalUrlBase, port, camera));
+					return makeStartRequest(client, String.format(START_URL_TEMPLATE, externalUrlBase, port, path, camera));
 				} catch (HttpHostConnectException e) {
-					return makeStartRequest(client, String.format(START_URL_TEMPLATE, internalUrlBase, port, camera));
+					return makeStartRequest(client, String.format(START_URL_TEMPLATE, internalUrlBase, port, path, camera));
 				}
 
 			}
@@ -141,9 +144,9 @@ public class MotionCamera {
 	public String startDetection() {
 		try {
 			try {
-				return makeStartRequest(client, String.format(START_URL_TEMPLATE, externalUrlBase, port, camera));
+				return makeStartRequest(client, String.format(START_URL_TEMPLATE, externalUrlBase, port, path, camera));
 			} catch (HttpHostConnectException e) {
-				return makeStartRequest(client, String.format(START_URL_TEMPLATE, internalUrlBase, port, camera));
+				return makeStartRequest(client, String.format(START_URL_TEMPLATE, internalUrlBase, port, path, camera));
 			}
 		} catch (Throwable t) {
 			return "Unable to connect to Motion";
@@ -166,7 +169,7 @@ public class MotionCamera {
         }
         
         HttpParams httpParams = httpclient.getParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, 5*1000);
+        HttpConnectionParams.setConnectionTimeout(httpParams, 10*1000);
         response = httpclient.execute(new HttpGet(startUrl));
         
 		int status = response.getStatusLine().getStatusCode();
@@ -182,9 +185,9 @@ public class MotionCamera {
 	public String pauseDetection() {
 		try {
 			try {
-				return makePauseRequest(client, String.format(PAUSE_URL_TEMPLATE, externalUrlBase, port, camera));
+				return makePauseRequest(client, String.format(PAUSE_URL_TEMPLATE, externalUrlBase, port, path, camera));
 			} catch (HttpHostConnectException e) {
-				return makePauseRequest(client, String.format(PAUSE_URL_TEMPLATE, internalUrlBase, port, camera));
+				return makePauseRequest(client, String.format(PAUSE_URL_TEMPLATE, internalUrlBase, port, path, camera));
 			}
 		} catch (Throwable t) {
 			return "Unable to connect to Motion";
@@ -205,7 +208,7 @@ public class MotionCamera {
         }
         
         HttpParams httpParams = httpclient.getParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, 5*1000);
+        HttpConnectionParams.setConnectionTimeout(httpParams, 10*1000);
         response = httpclient.execute(new HttpGet(pauseUrl));
 		
 		
@@ -222,9 +225,9 @@ public class MotionCamera {
 	public String snapshot() {
 		try {
 			try {
-				return makeSnapshotRequest(client, String.format(SNAPSHOT_URL_TEMPLATE, externalUrlBase, port, camera));
+				return makeSnapshotRequest(client, String.format(SNAPSHOT_URL_TEMPLATE, externalUrlBase, port, path, camera));
 			} catch (HttpHostConnectException e) {
-				return makeSnapshotRequest(client, String.format(SNAPSHOT_URL_TEMPLATE, internalUrlBase, port, camera));
+				return makeSnapshotRequest(client, String.format(SNAPSHOT_URL_TEMPLATE, internalUrlBase, port, path, camera));
 			}
 		} catch (Throwable t) {
 			return "Unable to connect to Motion";
@@ -246,7 +249,7 @@ public class MotionCamera {
         }
         
         HttpParams httpParams = httpclient.getParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, 5*1000);
+        HttpConnectionParams.setConnectionTimeout(httpParams, 10*1000);
         response = httpclient.execute(new HttpGet(pauseUrl));
         
 	

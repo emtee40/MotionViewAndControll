@@ -76,7 +76,7 @@
                 android:inputType="text"
                 android:singleLine="true" />
         </LinearLayout>
-        
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
                 android:inputType="text"
                 android:singleLine="true" />
         </LinearLayout>
-        
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -136,10 +136,9 @@
                 android:inputType="number"
                 android:maxLength="4"
                 android:singleLine="true" />
-       
         </LinearLayout>
-        
-                <TextView
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/control_ip_setting_label" />
@@ -158,7 +157,7 @@
                 android:inputType="text"
                 android:singleLine="true" />
         </LinearLayout>
-        
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -178,7 +177,7 @@
                 android:inputType="text"
                 android:singleLine="true" />
         </LinearLayout>
-        
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -218,10 +217,9 @@
                 android:inputType="number"
                 android:maxLength="4"
                 android:singleLine="true" />
-       
         </LinearLayout>
-        
-         <TextView
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/control_camera_setting_label" />
@@ -240,7 +238,27 @@
                 android:inputType="number"
                 android:maxLength="4"
                 android:singleLine="true" />
-       
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/control_interval_setting_label" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/control_interval_input"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:gravity="right|center_vertical"
+                android:inputType="number"
+                android:maxLength="4"
+                android:singleLine="true" />
         </LinearLayout>
 
         <CheckBox
@@ -248,7 +266,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/StayAwake" />
-         <CheckBox
+
+        <CheckBox
             android:id="@+id/cFullScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -38,6 +38,7 @@ public class SettingsActivity extends Activity {
 	EditText control_password_input;
 	EditText control_port_input;
 	EditText control_camera_input;
+	EditText control_interval_input;
 
 	CheckBox cstayAwake, cfullScreen;
 
@@ -56,6 +57,7 @@ public class SettingsActivity extends Activity {
 	String control_username = "";
 	String control_password = "";
 	String control_camera = "0";
+	String control_interval = "3600";
 
 	
 	String camera = "0";
@@ -92,6 +94,7 @@ public class SettingsActivity extends Activity {
         control_password_input = (EditText) findViewById(R.id.control_password);
         control_port_input = (EditText) findViewById(R.id.control_port_input);
         control_camera_input = (EditText) findViewById(R.id.control_camera_input);
+        control_interval_input = (EditText) findViewById(R.id.control_interval_input);
 
         cstayAwake = (CheckBox)findViewById(R.id.cStayAwake); 
         cfullScreen = (CheckBox)findViewById(R.id.cFullScreen); 
@@ -112,6 +115,7 @@ public class SettingsActivity extends Activity {
         	control_password = extras.getString("control_password");
         	control_ip_port = extras.getString("control_ip_port");
         	control_camera = extras.getString("control_camera");
+        	control_interval = extras.getString("control_interval");
 
         	stayAwake = extras.getBoolean("stayAwake");
         	fullScreen = extras.getBoolean("fullScreen");
@@ -132,6 +136,7 @@ public class SettingsActivity extends Activity {
         	control_password_input.setText(String.valueOf(control_password));
         	control_port_input.setText(String.valueOf(control_ip_port));
         	control_camera_input.setText(String.valueOf(control_camera));
+        	control_interval_input.setText(String.valueOf(control_interval));
 
         	cstayAwake.setChecked(stayAwake);
         	cfullScreen.setChecked(fullScreen);
@@ -230,6 +235,8 @@ public class SettingsActivity extends Activity {
         				control_ip_port = s;
         				s = control_camera_input.getText().toString();
         				control_camera = s;
+        				s = control_interval_input.getText().toString();
+        				control_interval = s;
         				
         				Intent intent = new Intent();
         				intent.putExtra("width", width);
@@ -247,6 +254,7 @@ public class SettingsActivity extends Activity {
 
         				intent.putExtra("stayAwake", stayAwake);
         				intent.putExtra("fullScreen", fullScreen);
+        				intent.putExtra("control_interval", control_interval);
 
         				        	        
         				setResult(RESULT_OK, intent);

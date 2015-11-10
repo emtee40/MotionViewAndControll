@@ -2,6 +2,8 @@ package com.camera.simplemjpeg;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -13,16 +15,16 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import com.camera.simplemjpeg.R;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.util.Log;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,7 +32,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class MjpegActivity extends Activity {
+public class MjpegActivity extends Activity  {
 	private static final boolean DEBUG=false;
     private static final String TAG = "MJPEG";
     
@@ -67,12 +69,19 @@ public class MjpegActivity extends Activity {
     private String control_username = "";
     private String control_password = "";
     private String control_camera = "0";
+    private String control_interval = "3600";
 
     private boolean suspending = false;
-     boolean stayAwake,fullScreen = false;
+    boolean stayAwake,fullScreen = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+        
 
         SharedPreferences preferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
         width = preferences.getString("width", width);
@@ -86,16 +95,29 @@ public class MjpegActivity extends Activity {
         control_password = preferences.getString("control_password", control_password);
         control_ip_port = preferences.getString("control_ip_port", control_ip_port);
         control_camera = preferences.getString("control_camera", control_camera);
+        control_interval = preferences.getString("control_interval", control_interval);
 
         stayAwake = preferences.getBoolean("stayAwake", false);
         fullScreen = preferences.getBoolean("fullScreen", false);
-
-        String s_colon = ":";
-                
+        
+        URI aURL = null;
+        
+        try {
+        	aURL = new URI(hostname);
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         StringBuilder sb = new StringBuilder();
-        sb.append(hostname);
-        sb.append(s_colon);
+	    
+        sb.append(aURL.getScheme());
+        sb.append("://");
+        sb.append(aURL.getHost());
+        sb.append(":");
         sb.append(ip_port);
+        sb.append(aURL.getPath());
+
        
         URL = new String(sb);
         Log.d(TAG,URL);
@@ -194,6 +216,7 @@ public class MjpegActivity extends Activity {
 
     			settings_intent.putExtra("stayAwake", stayAwake);
     			settings_intent.putExtra("fullScreen", fullScreen);
+    			settings_intent.putExtra("control_interval", control_interval);
 
     			startActivityForResult(settings_intent, REQUEST_SETTINGS);
     			return true;
@@ -219,6 +242,7 @@ public class MjpegActivity extends Activity {
 
     				stayAwake = data.getBooleanExtra("stayAwake",stayAwake);
     				fullScreen = data.getBooleanExtra("fullScreen",fullScreen);
+    				control_interval = data.getStringExtra("control_interval");
 
 
     				if(mv!=null){
@@ -240,6 +264,7 @@ public class MjpegActivity extends Activity {
 
     				editor.putBoolean("stayAwake", stayAwake);
     				editor.putBoolean("fullScreen", fullScreen);
+    				editor.putString("control_interval", control_interval);
 
     				editor.commit();
 
@@ -267,7 +292,7 @@ public class MjpegActivity extends Activity {
             
             
             HttpParams httpParams = httpclient.getParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, 5*1000);
+            HttpConnectionParams.setConnectionTimeout(httpParams, 10*1000);
             
             Log.d(TAG, "1. Sending http request");
             try {
@@ -316,5 +341,7 @@ public class MjpegActivity extends Activity {
         	startActivity((new Intent(MjpegActivity.this, MjpegActivity.class)));
         }
     }
+
+
 }
 

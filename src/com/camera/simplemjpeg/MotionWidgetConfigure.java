@@ -21,6 +21,7 @@ public class MotionWidgetConfigure extends Activity {
 	public static final String MOTION_WIDGET_INTERNAL = "MotionWidget_internal";
 	public static final String MOTION_WIDGET_EXTERNAL = "MotionWidget_external";
 	public static final String MOTION_WIDGET_PORT = "MotionWidget_port";
+	public static final String MOTION_WIDGET_INTERVAL = "MotionWidget_interval";
 
 	private Context self = this;
 	private int myAppWidgetId;
@@ -31,6 +32,7 @@ public class MotionWidgetConfigure extends Activity {
 	EditText control_password_input;
 	EditText control_port_input;
 	EditText control_camera_input;
+	EditText control_interval_input;
 
     
     private String control_ip_port = "81";
@@ -38,6 +40,7 @@ public class MotionWidgetConfigure extends Activity {
     private String control_username = "";
     private String control_password = "";
     private String control_camera = "0";
+    private String control_interval = "3600";
 
 
 	@Override
@@ -67,18 +70,21 @@ public class MotionWidgetConfigure extends Activity {
 	    control_password = prefs.getString("control_password", "");
 	    control_camera = prefs.getString("control_camera", "");
 	    control_ip_port = prefs.getString("control_ip_port", "");
-	    
+	    control_interval = prefs.getString("control_interval", "");
+
 	    control_hostname_input = (EditText) findViewById(R.id.control_hostname);
         control_username_input = (EditText) findViewById(R.id.control_username);
         control_password_input = (EditText) findViewById(R.id.control_password);
         control_port_input = (EditText) findViewById(R.id.control_port_input);
         control_camera_input = (EditText) findViewById(R.id.control_camera_input);
+        control_interval_input = (EditText) findViewById(R.id.control_interval_input);
 
 	     control_hostname_input.setText(control_hostname);
 		 control_username_input.setText(control_username);
 		 control_password_input.setText(control_password);
 		 control_port_input.setText(control_ip_port);
 		 control_camera_input.setText(control_camera);
+		 control_interval_input.setText(control_interval);
 
 
 		Button ok = (Button) findViewById(R.id.settings_done);
@@ -93,6 +99,7 @@ public class MotionWidgetConfigure extends Activity {
 				String username = ((EditText)findViewById(R.id.control_username)).getText().toString();
 				String password = ((EditText)findViewById(R.id.control_password)).getText().toString();
 				String camera = ((EditText)findViewById(R.id.control_camera_input)).getText().toString();
+				String interval = ((EditText)findViewById(R.id.control_interval_input)).getText().toString();
 
 				SharedPreferences prefs = self.getSharedPreferences(PREFS_NAME, 0);
 				SharedPreferences.Editor edit = prefs.edit();
@@ -102,6 +109,7 @@ public class MotionWidgetConfigure extends Activity {
 				edit.putString(MOTION_WIDGET_USERNAME+myAppWidgetId, username);
 				edit.putString(MOTION_WIDGET_PASSWORD+myAppWidgetId, password);
 				edit.putString(MOTION_WIDGET_CAMERA+myAppWidgetId, camera);
+				edit.putString(MOTION_WIDGET_INTERVAL+myAppWidgetId, interval);
 
 				edit.commit();
 
